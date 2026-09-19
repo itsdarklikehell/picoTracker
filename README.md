@@ -2,6 +2,13 @@
 
 picoTracker is a project that aims to provide a low cost open source and DIY hardware music tracker platform. It's firmware started as a modified version of [LittleGPTracker](https://littlegptracker.com/) (a.k.a piggy tracker) but has now diverged in many areas and added alot of new and improved functionality. It implements a user interface similar to the refined track-by-joypad software [*littlesounddj*](http://www.littlesounddj.com/).
 
+---
+
+## Development Visualization
+
+<video src="https://github.com/itsdarklikehell/picoTracker/assets/example.com/123456/gource.mp4" controls width="100%"></video>
+
+*Gource visualization showing the repository's commit history. See the [Gource workflow](.github/workflows/gource.yml) for details.*
 ## Features
 
 * 8 song channels
