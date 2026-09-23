@@ -6,7 +6,7 @@ picoTracker is a project that aims to provide a low cost open source and DIY har
 
 ## Development Visualization
 
-<video src="https://github.com/itsdarklikehell/picoTracker/assets/example.com/123456/gource.mp4" controls width="100%"></video>
+<video src="https://raw.githubusercontent.com/itsdarklikehell/picoTracker/master/gource.mp4" controls width="100%"></video>
 
 *Gource visualization showing the repository's commit history. See the [Gource workflow](.github/workflows/gource.yml) for details.*
 ## Features
