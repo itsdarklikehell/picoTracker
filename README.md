@@ -1,5 +1,11 @@
 # picoTracker
 
+
+[![CI](https://github.com/itsdarklikehell/picoTracker/actions/workflows/ci.yml/badge.svg)](https://github.com/itsdarklikehell/picoTracker/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/itsdarklikehell/picoTracker)](LICENSE)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
+
+
 picoTracker is a project that aims to provide a low cost open source and DIY hardware music tracker platform. It's firmware started as a modified version of [LittleGPTracker](https://littlegptracker.com/) (a.k.a piggy tracker) but has now diverged in many areas and added alot of new and improved functionality. It implements a user interface similar to the refined track-by-joypad software [*littlesounddj*](http://www.littlesounddj.com/).
 
 ---
