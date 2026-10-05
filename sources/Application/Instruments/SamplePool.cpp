@@ -11,6 +11,7 @@
 #include "Application/Model/Config.h"
 #include "Application/Persistency/PersistencyService.h"
 #include "Application/Utils/DrawUtils.h"
+#include "Application/Utils/SharedBuffer.h"
 #include "Externals/SRC/common.h"
 #include "Externals/etl/include/etl/string.h"
 #include "Externals/etl/include/etl/string_stream.h"
@@ -328,6 +329,29 @@ uint32_t SamplePool::FindSampleIndexByName(
   return -1;
 }
 
+etl::string<MAX_INSTRUMENT_FILENAME_LENGTH>
+SamplePool::makeProjectFilename(const char *name) {
+  // will truncate too long filenames to make sure the filename imported into
+  // the project is with filename length limit
+  etl::string<MAX_INSTRUMENT_FILENAME_LENGTH> projSampleFilename(name);
+  if (projSampleFilename.is_truncated()) {
+    // Truncate the string in-place and then append the extension
+    projSampleFilename =
+        projSampleFilename.substr(0, MAX_INSTRUMENT_FILENAME_LENGTH - 4);
+    projSampleFilename.append(".wav");
+  }
+  return projSampleFilename;
+}
+
+bool SamplePool::hasSampleName(const char *name) const {
+  for (uint32_t i = 0; i < count_; ++i) {
+    if (names_[i] && strcmp(names_[i], name) == 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
 #define IMPORT_CHUNK_SIZE 512
 static constexpr int32_t kImportInputSamples =
     IMPORT_CHUNK_SIZE / static_cast<int32_t>(sizeof(int16_t));
@@ -349,15 +373,8 @@ int SamplePool::ImportSample(const char *name, const char *projectName) {
     return -1;
   }
 
-  // will truncate too long filenames to make sure the filename imported into
-  // the project is with filename length limit
-  etl::string<MAX_INSTRUMENT_FILENAME_LENGTH> projSampleFilename(name);
-  if (projSampleFilename.is_truncated()) {
-    // Truncate the string in-place and then append the extension
-    projSampleFilename =
-        projSampleFilename.substr(0, MAX_INSTRUMENT_FILENAME_LENGTH - 4);
-    projSampleFilename.append(".wav");
-  }
+  etl::string<MAX_INSTRUMENT_FILENAME_LENGTH> projSampleFilename =
+      makeProjectFilename(name);
 
   etl::string<MAX_PROJECT_SAMPLE_PATH_LENGTH> projectSamplePath("/projects/");
   projectSamplePath.append(projectName);
@@ -386,7 +403,8 @@ int SamplePool::ImportSample(const char *name, const char *projectName) {
   }
 
   // copy file to current project as 16-bit PCM
-  uint8_t buffer[IMPORT_CHUNK_SIZE];
+  auto *buffer = static_cast<uint8_t *>(SharedBuffer::Get());
+  constexpr uint32_t copyBufferSize = SharedBuffer::Size;
   uint32_t bytesRead = 0;
   uint32_t samplesRead = 0;
   uint32_t totalRead = 0;
@@ -419,7 +437,7 @@ int SamplePool::ImportSample(const char *name, const char *projectName) {
 
   while (true) {
     if (!shouldResample) {
-      if (!wav.Read(buffer, sizeof(buffer), &bytesRead)) {
+      if (!wav.Read(buffer, copyBufferSize, &bytesRead)) {
         Trace::Error("Failed reading sample data from:%s", name);
         return -1;
       }
